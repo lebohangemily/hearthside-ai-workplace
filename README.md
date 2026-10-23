@@ -48,7 +48,7 @@ Step 1: Clone the repository
 
 Replace YOUR-USERNAME with your GitHub username.
 
-git clone https://github.com/YOUR-USERNAME/AI-Workplace-Productivity-Assistant.git
+git clone https://github.com/Lebohangemily/AI-Workplace-Productivity-Assistant.git
 
 Step 2: Navigate to the project directory
 
@@ -105,7 +105,7 @@ AI-Workplace-Productivity-Assistant/
 
 8. Team Members
 
-* Project Developer: [Your Name]
+* Project Developer: [Emily]
 
 Add other contributors here if the project is developed collaboratively.
 
