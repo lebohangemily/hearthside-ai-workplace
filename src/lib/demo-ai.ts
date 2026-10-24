@@ -70,8 +70,8 @@ export function demoMeeting(notes: string): DemoOutput {
   const s = sentences(notes);
   const decisions = s.filter((x) => /\b(decided|agreed|approved|confirmed|will go with|chose|final)\b/i.test(x));
   const actions = s.filter((x) => /\b(will|to do|action|assign|needs? to|should|follow up|send|prepare|owner)\b/i.test(x) && !decisions.includes(x));
-  const deadlines = s.map((x) => { const m = x.match(DEADLINE_RE); return m ? `${cap(m[2])} — ${x}` : null; }).filter(Boolean) as string[];
-  const people = Array.from(new Set((notes.match(/\b[A-Z][a-z]{2,}\b/g) ?? []).filter((w) => !/^(The|We|They|Next|Action|Decision|Monday|Tuesday|Wednesday|Thursday|Friday|Meeting|This|Also|Team|Our)$/.test(w)))).slice(0, 6);
+  const deadlines = s.map((x) => { const m = x.match(DEADLINE_RE); return m ? `${cap(m[2] ?? "")} — ${x}` : null; }).filter(Boolean) as string[];
+  const people = Array.from(new Set((notes.match(/\b[A-Z][a-z]{2,}\b/g) ?? []).filter((w) => !/^(The|We|They|Next|Weekly|Reviewed|Decided|Discussed|Agreed|Product|Login|Action|Decision|Monday|Tuesday|Wednesday|Thursday|Friday|Meeting|This|Also|Team|Our)$/.test(w)))).slice(0, 6);
   return {
     sections: [
       { title: "Summary", text: `${s.length} discussion point(s) captured${people.length ? ` involving ${people.join(", ")}` : ""}. ${s.slice(0, 2).map(cap).join(". ")}.` },
@@ -88,7 +88,7 @@ export function demoPlan(input: string, period: "Daily" | "Weekly", startHour: n
   const lines = input.split(/\n/).map((l) => l.replace(/^[-*•\d.)\s]+/, "").trim()).filter(Boolean);
   const tasks: PlanTask[] = lines.map((l) => {
     const dur = l.match(/(\d+(?:\.\d+)?)\s*(h|hr|hrs|hours?|m|min|mins|minutes?)\b/i);
-    const minutes = dur ? Math.round(parseFloat(dur[1]) * (/^h/i.test(dur[2]) ? 60 : 1)) : /review|email|call/i.test(l) ? 30 : 60;
+    const minutes = dur ? Math.round(parseFloat(dur[1] ?? "0") * (/^h/i.test(dur[2] ?? "") ? 60 : 1)) : /review|email|call/i.test(l) ? 30 : 60;
     const priority = /urgent|asap|deadline|today|client|ceo|critical|due/i.test(l) ? "High" : /review|prepare|update|meeting|report/i.test(l) ? "Medium" : "Low";
     return { task: cap(l.replace(dur?.[0] ?? "", "").replace(/[()]/g, "").trim()), priority, minutes };
   });
@@ -107,8 +107,8 @@ export function demoPlan(input: string, period: "Daily" | "Weekly", startHour: n
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
     const load = days.map(() => 0);
     const out: string[][] = days.map(() => []);
-    tasks.forEach((k) => { const d = load.indexOf(Math.min(...load)); load[d] += k.minutes; out[d].push(`${k.task} (${k.minutes}m, ${k.priority})`); });
-    days.forEach((d, i) => sched.push(`${d}: ${out[i].length ? out[i].join(" · ") : "Buffer / deep work"}`));
+    tasks.forEach((k) => { const d = load.indexOf(Math.min(...load)); load[d]! += k.minutes; out[d]!.push(`${k.task} (${k.minutes}m, ${k.priority})`); });
+    days.forEach((d, i) => sched.push(`${d}: ${out[i]!.length ? out[i]!.join(" · ") : "Buffer / deep work"}`));
   }
   const total = tasks.reduce((a, b) => a + b.minutes, 0);
   return {
