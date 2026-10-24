@@ -71,7 +71,7 @@ export function demoMeeting(notes: string): DemoOutput {
   const decisions = s.filter((x) => /\b(decided|agreed|approved|confirmed|will go with|chose|final)\b/i.test(x));
   const actions = s.filter((x) => /\b(will|to do|action|assign|needs? to|should|follow up|send|prepare|owner)\b/i.test(x) && !decisions.includes(x));
   const deadlines = s.map((x) => { const m = x.match(DEADLINE_RE); return m ? `${cap(m[2] ?? "")} — ${x}` : null; }).filter(Boolean) as string[];
-  const people = Array.from(new Set((notes.match(/\b[A-Z][a-z]{2,}\b/g) ?? []).filter((w) => !/^(The|We|They|Next|Action|Decision|Monday|Tuesday|Wednesday|Thursday|Friday|Meeting|This|Also|Team|Our)$/.test(w)))).slice(0, 6);
+  const people = Array.from(new Set((notes.match(/\b[A-Z][a-z]{2,}\b/g) ?? []).filter((w) => !/^(The|We|They|Next|Weekly|Reviewed|Decided|Discussed|Agreed|Product|Login|Action|Decision|Monday|Tuesday|Wednesday|Thursday|Friday|Meeting|This|Also|Team|Our)$/.test(w)))).slice(0, 6);
   return {
     sections: [
       { title: "Summary", text: `${s.length} discussion point(s) captured${people.length ? ` involving ${people.join(", ")}` : ""}. ${s.slice(0, 2).map(cap).join(". ")}.` },
